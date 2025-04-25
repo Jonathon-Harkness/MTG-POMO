@@ -1,0 +1,14 @@
+@use "../../../scss/custom";
+
+.header {
+  display: flex;
+  background-color: custom.$orange;
+  height: 3rem;
+  justify-content: left;
+  align-items: center;
+}
+
+.title {
+  padding-left: 0.5rem;
+  font-size: 1.6rem;
+}
