@@ -7,11 +7,17 @@
   background-size: cover;
 }
 
+a {
+  text-decoration: none;
+}
+
 img {
+  box-sizing: border-box;
   height: fit-content; //so that it takes up full space
-  max-height: 600px !important; // this prevents the image from being extremely big
+  max-height: 500px !important; // this prevents the image from being extremely big
   object-fit: scale-down;
   object-position: center; /* this centers and crops the image so that it doesn't break the aspect ratio */
+  width: 100%;
 }
 
 .container {
@@ -21,4 +27,20 @@ img {
   column-gap: 1rem;
   row-gap: 1rem;
   margin-top: 1rem;
+}
+
+.mat-spinner {
+  align-items: center;
+}
+
+.spinner {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 5%;
+  right: 5%;
 }

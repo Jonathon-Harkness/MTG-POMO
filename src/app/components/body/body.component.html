@@ -1,14 +1,14 @@
-<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-<div class="container">
-  <mat-card class="example-card" *ngFor="let card of obs | async">
-    <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>{{card.name}}</mat-card-title>
-      <mat-card-subtitle>{{card.subtitle}}</mat-card-subtitle>
-    </mat-card-header>
-    <img mat-card-image [src]="card.image_uris?.normal" alt="card.name">
-    <mat-card-content>
-      <p>{{card.oracle_text}}</p>
-    </mat-card-content>
-  </mat-card>
-</div>
+<mat-paginator [pageSize]="20" [pageSizeOptions]="[20, 50, 100, 200]"></mat-paginator>
+<!--<mat-spinner class="spinner" *ngIf="isLoading"></mat-spinner>-->
+<ng-container *ngIf="isLoading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-container>
+<ng-container *ngIf="!isLoading">
+  <div class="container">
+      <mat-card class="example-card" *ngFor="let card of obs | async">
+        <a target="_blank" [href]="card.scryfall_uri"><img mat-card-image [src]="card.image_uris?.normal" [alt]="card.name"></a>
+      </mat-card>
+  </div>
+</ng-container>

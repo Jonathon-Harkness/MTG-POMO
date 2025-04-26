@@ -13,6 +13,8 @@ import {MatTableDataSource} from '@angular/material/table';
 import {concat, Observable, take} from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
 import { Data, Name } from '../../interfaces/pomo.interface';
+import {RouterLink} from '@angular/router';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 export interface Card {
   title: string;
@@ -86,7 +88,9 @@ const DATA: Card[] = [
     MatPaginator,
     MatPaginator,
     CommonModule,
-    MatCardImage
+    MatCardImage,
+    RouterLink,
+    MatProgressSpinner
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
@@ -96,6 +100,7 @@ export class BodyComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   obs: Observable<any>;
   dataSource: MatTableDataSource<Data>;
+  isLoading: boolean = true;
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -122,6 +127,8 @@ export class BodyComponent implements OnInit, OnDestroy {
       this.dataSource = new MatTableDataSource<Data>(combinedObj);
       this.dataSource.paginator = this.paginator;
       this.obs = this.dataSource.connect();
+      this.isLoading = false;
     })
   }
+
 }
