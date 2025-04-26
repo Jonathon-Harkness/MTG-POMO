@@ -10,11 +10,13 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
-import {concat, Observable, take} from 'rxjs';
+import { Observable, take } from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
-import { Data, Name } from '../../interfaces/pomo.interface';
+import { Data } from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
+import {AutocompleteSearchComponent} from '../autocomplete-search/autocomplete-search.component';
 
 
 @Component({
@@ -31,7 +33,10 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
     CommonModule,
     MatCardImage,
     RouterLink,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatAutocomplete,
+    MatOption,
+    AutocompleteSearchComponent
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
@@ -42,7 +47,7 @@ export class BodyComponent implements OnInit, OnDestroy {
   obs: Observable<any>;
   dataSource: MatTableDataSource<Data>;
   isLoading: boolean = true;
-  private dataArr: any[] = [];
+  dataArr: any[] = [];
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -100,6 +105,11 @@ export class BodyComponent implements OnInit, OnDestroy {
 
   getCardImage(card: any) {
     return card.image_uris ? card.image_uris.normal : card.card_faces[0]?.image_uris?.normal;
+  }
+
+  updateSearch(event: any) {
+    console.log(event);
+    this.dataSource.data = event;
   }
 
 }

@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 .example-card {
   width: 18.75rem;
 }
@@ -20,13 +22,17 @@ img {
   width: 100%;
 }
 
-.container {
+.card-container {
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: left;
   column-gap: 1rem;
   row-gap: 1rem;
   margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 }
 
 .mat-spinner {
@@ -43,4 +49,10 @@ img {
   left: 0;
   bottom: 5%;
   right: 5%;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-paginator-container {
+    position: fixed;
+    bottom: 0;
+    background-color: white;
 }
