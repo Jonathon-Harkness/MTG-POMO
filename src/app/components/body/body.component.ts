@@ -16,65 +16,6 @@ import { Data, Name } from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
-export interface Card {
-  title: string;
-  subtitle: string;
-  text: string;
-}
-
-const DATA: Card[] = [
-  {
-    title: 'Shiba Inu 1',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 2',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 3',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 4',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 5',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 6',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 7',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 8',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 9',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  },
-  {
-    title: 'Shiba Inu 10',
-    subtitle: 'Dog Breed',
-    text: 'The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.'
-  }
-];
-
 
 @Component({
   selector: 'app-body',
@@ -101,6 +42,7 @@ export class BodyComponent implements OnInit, OnDestroy {
   obs: Observable<any>;
   dataSource: MatTableDataSource<Data>;
   isLoading: boolean = true;
+  private dataArr: any[] = [];
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -109,7 +51,8 @@ export class BodyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.changeDetectorRef.detectChanges();
-    this.getCardData();
+    //this.getCardData();
+    this.getCardDataSearch();
   }
 
   ngOnDestroy() {
@@ -118,17 +61,45 @@ export class BodyComponent implements OnInit, OnDestroy {
     }
   }
 
+  getCardDataSearch() {
+    const searchPathBase = 'https://api.scryfall.com/cards/search?q=legal%3Avintage+(is%3Aub+or+set%3Asld+or+set%3Aslc+or+set%3Aslu+or+set%3Aslp+or+is%3Agodzilla+or+is%3Adracula+or+is%3Apagl+or+is%3Aphed+or+is%3Apctb)+-!"sol+ring"+-!"mana+vault"+-!"the+one+ring"+-!"strip+mine"+-!wasteland+-!"mental+misstep"&unique=cards&as=grid&order=name';
+    this.getCardDataSearchCall(searchPathBase);
+  }
+
+  getCardDataSearchCall(searchPath: string) {
+    this.scryfallService.getPomoCardSets(searchPath).pipe(take(1)).subscribe(res => {
+      this.dataArr.push(...res.data);
+      if (res.has_more) {
+        this.getCardDataSearchCall(res.next_page);
+      } else {
+        this.getCardData();
+      }
+    })
+  }
+
   getCardData() {
     this.scryfallService.getAllCards().pipe(take(1)).subscribe(data => {
-      console.log(data);
       const combinedObj = [...data[0].data, ...data[1].data];
-      console.log(combinedObj);
-
-      this.dataSource = new MatTableDataSource<Data>(combinedObj);
-      this.dataSource.paginator = this.paginator;
-      this.obs = this.dataSource.connect();
-      this.isLoading = false;
+      this.dataArr.push(...combinedObj);
+      this.setUpCardData();
     })
+  }
+
+  setUpCardData() {
+    this.dataArr.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+    console.log(this.dataArr);
+    this.dataSource = new MatTableDataSource<Data>(this.dataArr);
+    this.dataSource.paginator = this.paginator;
+    this.obs = this.dataSource.connect();
+    this.isLoading = false;
+  }
+
+  getCardImage(card: any) {
+    return card.image_uris ? card.image_uris.normal : card.card_faces[0]?.image_uris?.normal;
   }
 
 }

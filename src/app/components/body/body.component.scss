@@ -1,5 +1,5 @@
 .example-card {
-  max-width: 300px;
+  width: 18.75rem;
 }
 
 .example-header-image {
@@ -23,7 +23,7 @@ img {
 .container {
   display: flex;
   flex-flow: row wrap;
-  justify-content: left;
+  justify-content: center;
   column-gap: 1rem;
   row-gap: 1rem;
   margin-top: 1rem;
