@@ -1,0 +1,15 @@
+.advanced-search-container > div {
+  width: 100%;
+  text-align: left;
+  border-style: solid;
+}
+
+.advanced-search-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+}

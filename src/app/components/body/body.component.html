@@ -11,23 +11,24 @@
   <div class="container">
     <div class="filter">
       <div class="search">
-        <mat-form-field>
+        <mat-form-field class="search-type">
           <mat-label>Search Type</mat-label>
           <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">
             <mat-option [value]="'Name'">Name</mat-option>
             <mat-option [value]="'Effect'">Effect</mat-option>
+            <mat-option [value]="'Type'">Type</mat-option>
           </mat-select>
         </mat-form-field>
         <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="dataArr"></app-autocomplete-search>
-<!--        <mat-form-field class="example-full-width">-->
-<!--          <mat-label>Favorite food</mat-label>-->
-<!--          <input matInput placeholder="Ex. Pizza" value="Sushi">-->
-<!--        </mat-form-field>-->
-<!--        <p><mat-slide-toggle>Slide me!</mat-slide-toggle></p>-->
-        <button mat-button>Advanced Search<mat-icon fontIcon="arrow_drop_down" aria-hidden="false" aria-label="Example thumbs up SVG icon" iconPositionEnd></mat-icon></button>
-<!--        <app-advanced-search-dropdown></app-advanced-search-dropdown>-->
+<!--        <button mat-button (click)="openAdvancedSearch($event)">Advanced Search-->
+<!--          <mat-icon *ngIf="!advancedSearchOpen" fontIcon="arrow_drop_down" aria-hidden="false" aria-label="arrow drop down icon" iconPositionEnd></mat-icon>-->
+<!--          <mat-icon *ngIf="advancedSearchOpen" fontIcon="arrow_drop_up" aria-hidden="false" aria-label="arrow drop up icon" iconPositionEnd></mat-icon>-->
+<!--        </button>-->
       </div>
     </div>
+    <ng-container *ngIf="advancedSearchOpen">
+      <app-advanced-search></app-advanced-search>
+    </ng-container>
     <div class="card-container">
       <mat-card class="card" *ngFor="let card of obs | async">
         <a target="_blank" [href]="card.scryfall_uri"><img mat-card-image [src]="getCardImage(card)" [alt]="card.name"></a>

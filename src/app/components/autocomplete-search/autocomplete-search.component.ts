@@ -56,8 +56,11 @@ export class AutocompleteSearchComponent implements OnInit {
       if (this.autocompleteService.currentValue === 'Name') {
         const filteredResult = name ? this._filterName(name as string) : this.cardOptions().slice();
         this.dataService.updateData(filteredResult);
-      } else {
+      } else if (this.autocompleteService.currentValue === 'Effect') {
         const filteredResult = name ? this._filterEffect(name as string) : this.cardOptions().slice();
+        this.dataService.updateData(filteredResult);
+      } else if (this.autocompleteService.currentValue === 'Type') {
+        const filteredResult = name ? this._filterType(name as string) : this.cardOptions().slice();
         this.dataService.updateData(filteredResult);
       }
     });
@@ -75,6 +78,11 @@ export class AutocompleteSearchComponent implements OnInit {
   private _filterEffect(effect: string): any {
     const filterValue = effect.toLowerCase();
     return this.cardOptions().filter((option: any) => (option.oracle_text ?? option.card_faces[0].oracle_text).toLowerCase().includes(filterValue));
+  }
+
+  private _filterType(type: string): any {
+    const filterType = type.toLowerCase();
+    return this.cardOptions().filter((option: any) => (option.type_line ?? option.card_faces[0].type_line).toLowerCase().includes(filterType));
   }
 
   clearResults() {

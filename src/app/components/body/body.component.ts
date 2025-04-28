@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginator } from '@angular/material/paginator';
 import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
-import { Observable, take } from 'rxjs';
+import {delay, Observable, take} from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
 import { Data } from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
@@ -21,6 +21,7 @@ import {MatInput} from '@angular/material/input';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {AdvancedSearchComponent} from '../advanced-search/advanced-search.component';
 
 
 @Component({
@@ -43,7 +44,8 @@ import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
     MatSlideToggleModule,
     MatIconButton,
     MatButton,
-    MatIconModule
+    MatIconModule,
+    AdvancedSearchComponent
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
@@ -56,6 +58,7 @@ export class BodyComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   dataArr: any[] = [];
   selectedSearchOption: string = 'Name';
+  advancedSearchOpen = false;
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -82,7 +85,7 @@ export class BodyComponent implements OnInit, OnDestroy {
   }
 
   getCardDataSearchCall(searchPath: string) {
-    this.scryfallService.getPomoCardSets(searchPath).pipe(take(1)).subscribe(res => {
+    this.scryfallService.getPomoCardSets(searchPath).pipe(delay(75)).subscribe(res => {
       this.dataArr.push(...res.data);
       if (res.has_more) {
         this.getCardDataSearchCall(res.next_page);
@@ -129,4 +132,7 @@ export class BodyComponent implements OnInit, OnDestroy {
     this.autocompleteService.updateData(event.value);
   }
 
+  openAdvancedSearch(event: MouseEvent) {
+    this.advancedSearchOpen = !this.advancedSearchOpen;
+  }
 }

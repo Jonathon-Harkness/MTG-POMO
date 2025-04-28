@@ -99,6 +99,13 @@ img {
     button {
       margin-top: 0.5rem;
     }
+
+    .search-type {
+      @media (max-width: 768px) {
+        flex: 1 1 auto;
+        display: inherit;
+      }
+    }
   }
 
   .example-full-width {
