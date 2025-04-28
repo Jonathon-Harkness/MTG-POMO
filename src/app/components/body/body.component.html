@@ -1,13 +1,35 @@
 <ng-container *ngIf="isLoading">
   <div class="spinner">
-    <mat-spinner></mat-spinner>
+    <div class="spinner-items">
+      <mat-spinner></mat-spinner>
+      <p>Loading Cards</p>
+      <p>(this might take a while)</p>
+    </div>
   </div>
 </ng-container>
 <ng-container *ngIf="!isLoading">
   <div class="container">
-    <app-autocomplete-search [cardOptions]="dataArr" (filteredCardOptions)="updateSearch($event)"></app-autocomplete-search>
+    <div class="filter">
+      <div class="search">
+        <mat-form-field>
+          <mat-label>Search Type</mat-label>
+          <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">
+            <mat-option [value]="'Name'">Name</mat-option>
+            <mat-option [value]="'Effect'">Effect</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="dataArr"></app-autocomplete-search>
+<!--        <mat-form-field class="example-full-width">-->
+<!--          <mat-label>Favorite food</mat-label>-->
+<!--          <input matInput placeholder="Ex. Pizza" value="Sushi">-->
+<!--        </mat-form-field>-->
+<!--        <p><mat-slide-toggle>Slide me!</mat-slide-toggle></p>-->
+        <button mat-button>Advanced Search<mat-icon fontIcon="arrow_drop_down" aria-hidden="false" aria-label="Example thumbs up SVG icon" iconPositionEnd></mat-icon></button>
+<!--        <app-advanced-search-dropdown></app-advanced-search-dropdown>-->
+      </div>
+    </div>
     <div class="card-container">
-      <mat-card class="example-card" *ngFor="let card of obs | async">
+      <mat-card class="card" *ngFor="let card of obs | async">
         <a target="_blank" [href]="card.scryfall_uri"><img mat-card-image [src]="getCardImage(card)" [alt]="card.name"></a>
       </mat-card>
     </div>

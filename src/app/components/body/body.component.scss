@@ -1,7 +1,12 @@
 @use '@angular/material' as mat;
+@use '../scss/custom';
 
-.example-card {
+.card {
   width: 18.75rem;
+
+  @media (max-width: 768px) {
+    width: 10rem;
+  }
 }
 
 .example-header-image {
@@ -42,17 +47,60 @@ img {
 .spinner {
   position: fixed;
   z-index: 999;
-  height: 2em;
-  width: 2em;
   margin: auto;
   top: 0;
   left: 0;
-  bottom: 5%;
-  right: 5%;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .spinner-items {
+    text-align: center;
+  }
+
+  .mat-mdc-progress-spinner {
+    margin-bottom: 1rem;
+    display: inline-flex;
+  }
 }
 
 ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-container {
     position: fixed;
     bottom: 0;
     background-color: white;
+}
+
+.filter {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
+
+  .search {
+    justify-self: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    display: inherit;
+    flex-flow: inherit;
+
+    .app-autocomplete-search {
+      flex: 1 1 auto;
+      display: inherit;
+    }
+
+    button {
+      margin-top: 0.5rem;
+    }
+  }
+
+  .example-full-width {
+    justify-items: right;
+  }
+}
+
+.advanced-search {
+  justify-self: flex-end;
+  //margin-right: 3rem;
 }

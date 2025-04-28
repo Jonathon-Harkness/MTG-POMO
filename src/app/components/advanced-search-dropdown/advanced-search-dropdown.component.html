@@ -1,0 +1,11 @@
+<div class="expansion-panel">
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>sadf</mat-panel-title>
+      <mat-panel-description>
+        Currently I am {{panelOpenState() ? 'open' : 'closed'}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>I'm visible because I am open</p>
+  </mat-expansion-panel>
+</div>

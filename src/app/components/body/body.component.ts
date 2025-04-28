@@ -1,12 +1,5 @@
 import {Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy, OnChanges} from '@angular/core';
-import {
-  MatCard,
-  MatCardActions,
-  MatCardContent,
-  MatCardHeader, MatCardImage,
-  MatCardSubtitle,
-  MatCardTitle
-} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { MatPaginator } from '@angular/material/paginator';
 import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
@@ -17,26 +10,40 @@ import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
 import {AutocompleteSearchComponent} from '../autocomplete-search/autocomplete-search.component';
+import {DataService} from '../../services/data.service';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {AdvancedSearchDropdownComponent} from '../advanced-search-dropdown/advanced-search-dropdown.component';
+import {MatFormField} from '@angular/material/form-field';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
+import {AutocompleteService} from '../../services/autocomplete.service';
+import {MatInput} from '@angular/material/input';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-body',
   imports: [
-    MatCardHeader,
-    MatCard,
-    MatCardContent,
-    MatCardActions,
-    MatCardSubtitle,
-    MatCardTitle,
-    MatPaginator,
     MatPaginator,
     CommonModule,
-    MatCardImage,
     RouterLink,
     MatProgressSpinner,
     MatAutocomplete,
     MatOption,
-    AutocompleteSearchComponent
+    AutocompleteSearchComponent,
+    MatExpansionModule,
+    MatCardModule,
+    AdvancedSearchDropdownComponent,
+    MatFormField,
+    MatSelectModule,
+    FormsModule,
+    MatInput,
+    MatSlideToggleModule,
+    MatIconButton,
+    MatButton,
+    MatIconModule
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
@@ -48,15 +55,18 @@ export class BodyComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<Data>;
   isLoading: boolean = true;
   dataArr: any[] = [];
+  selectedSearchOption: string = 'Name';
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private scryfallService: ScryfallService)
+    private scryfallService: ScryfallService,
+    private dataService: DataService,
+    private autocompleteService: AutocompleteService,
+  )
   { }
 
   ngOnInit() {
     this.changeDetectorRef.detectChanges();
-    //this.getCardData();
     this.getCardDataSearch();
   }
 
@@ -77,12 +87,12 @@ export class BodyComponent implements OnInit, OnDestroy {
       if (res.has_more) {
         this.getCardDataSearchCall(res.next_page);
       } else {
-        this.getCardData();
+        this.getCardDataExceptions();
       }
     })
   }
 
-  getCardData() {
+  getCardDataExceptions() {
     this.scryfallService.getAllCards().pipe(take(1)).subscribe(data => {
       const combinedObj = [...data[0].data, ...data[1].data];
       this.dataArr.push(...combinedObj);
@@ -100,16 +110,23 @@ export class BodyComponent implements OnInit, OnDestroy {
     this.dataSource = new MatTableDataSource<Data>(this.dataArr);
     this.dataSource.paginator = this.paginator;
     this.obs = this.dataSource.connect();
+    this.dataService.updateData(this.dataArr);
     this.isLoading = false;
+    this.getCardData();
+  }
+
+  getCardData() {
+    this.dataService.currentData.subscribe(data => {
+      this.dataSource.data = data
+    })
   }
 
   getCardImage(card: any) {
     return card.image_uris ? card.image_uris.normal : card.card_faces[0]?.image_uris?.normal;
   }
 
-  updateSearch(event: any) {
-    console.log(event);
-    this.dataSource.data = event;
+  updateSearchType(event: MatSelectChange) {
+    this.autocompleteService.updateData(event.value);
   }
 
 }
