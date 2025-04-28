@@ -25,6 +25,12 @@ img {
   object-fit: scale-down;
   object-position: center; /* this centers and crops the image so that it doesn't break the aspect ratio */
   width: 100%;
+
+  @media (max-width: 768px) {
+    max-height: 230px !important;
+    height: auto;
+    object-fit: fill;
+  }
 }
 
 .card-container {
