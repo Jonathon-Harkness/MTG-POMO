@@ -11,19 +11,25 @@
   <div class="container">
     <div class="filter">
       <div class="search">
-        <mat-form-field class="search-type">
-          <mat-label>Search Type</mat-label>
-          <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">
-            <mat-option [value]="'Name'">Name</mat-option>
-            <mat-option [value]="'Effect'">Effect</mat-option>
-            <mat-option [value]="'Type'">Type</mat-option>
-          </mat-select>
-        </mat-form-field>
+<!--        <mat-form-field class="search-type">-->
+<!--          <mat-label>Search Type</mat-label>-->
+<!--          <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">-->
+<!--            <mat-option [value]="'Name'">Name</mat-option>-->
+<!--            <mat-option [value]="'Effect'">Effect</mat-option>-->
+<!--            <mat-option [value]="'Type'">Type</mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
         <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="dataArr"></app-autocomplete-search>
 <!--        <button mat-button (click)="openAdvancedSearch($event)">Advanced Search-->
 <!--          <mat-icon *ngIf="!advancedSearchOpen" fontIcon="arrow_drop_down" aria-hidden="false" aria-label="arrow drop down icon" iconPositionEnd></mat-icon>-->
 <!--          <mat-icon *ngIf="advancedSearchOpen" fontIcon="arrow_drop_up" aria-hidden="false" aria-label="arrow drop up icon" iconPositionEnd></mat-icon>-->
 <!--        </button>-->
+      </div>
+      <div class="slide-toggles">
+<!--        <p><mat-slide-toggle (change)="changeSearchSelection($event)">Name</mat-slide-toggle></p>-->
+<!--        <p><mat-slide-toggle>Type</mat-slide-toggle></p>-->
+<!--        <p><mat-slide-toggle>Effect</mat-slide-toggle></p>-->
+        <p *ngFor="let slideToggle of slideToggles"><mat-slide-toggle [(ngModel)]="slideToggle.checked" (change)="updateSearchSelection($event)">{{ slideToggle.name }}</mat-slide-toggle></p>
       </div>
     </div>
     <ng-container *ngIf="advancedSearchOpen">

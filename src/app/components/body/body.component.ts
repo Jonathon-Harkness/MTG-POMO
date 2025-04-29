@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {delay, Observable, take} from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
-import { Data } from '../../interfaces/pomo.interface';
+import {Data, SlideToggle} from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
@@ -18,7 +18,7 @@ import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
 import {AutocompleteService} from '../../services/autocomplete.service';
 import {MatInput} from '@angular/material/input';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSlideToggleChange, MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {AdvancedSearchComponent} from '../advanced-search/advanced-search.component';
@@ -68,9 +68,28 @@ export class BodyComponent implements OnInit, OnDestroy {
   )
   { }
 
+  slideToggles = [
+    {
+      id: 1,
+      name: "Name",
+      checked: true
+    },
+    {
+      id: 2,
+      name: "Type",
+      checked: false
+    },
+    {
+      id: 3,
+      name: "Effect",
+      checked: false
+    }
+  ] as SlideToggle[];
+
   ngOnInit() {
     this.changeDetectorRef.detectChanges();
     this.getCardDataSearch();
+    this.autocompleteService.updateData(this.slideToggles);
   }
 
   ngOnDestroy() {
@@ -135,4 +154,10 @@ export class BodyComponent implements OnInit, OnDestroy {
   openAdvancedSearch(event: MouseEvent) {
     this.advancedSearchOpen = !this.advancedSearchOpen;
   }
+
+  updateSearchSelection(event: MatSlideToggleChange) {
+    console.log(event);
+    this.autocompleteService.updateData(this.slideToggles);
+  }
+
 }

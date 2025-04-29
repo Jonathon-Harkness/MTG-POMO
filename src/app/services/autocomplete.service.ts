@@ -6,7 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class AutocompleteService {
 
-  private searchType = new BehaviorSubject<any>('Name');
+  private searchType = new BehaviorSubject<any>([]);
   currentSearchType = this.searchType.asObservable();
 
   updateData(data: any) {

@@ -1,3 +1,12 @@
-.footer {
-  height: 6rem;
+.container {
+  height: 10rem;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+
+  .disclaimer {
+    font-size: 0.75rem;
+    margin-top: 2rem;
+    max-width: 750px;
+  }
 }

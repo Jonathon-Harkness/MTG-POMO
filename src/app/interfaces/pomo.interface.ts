@@ -5,3 +5,9 @@ export interface Data {
 export interface Name {
   name: string
 }
+
+export interface SlideToggle {
+  id: number,
+  name: string,
+  checked: boolean
+}
