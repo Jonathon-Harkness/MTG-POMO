@@ -1,3 +1,24 @@
 .expansion-panel {
+}
 
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+  padding-left: 0;
+}
+
+:host {
+  width: 33.3%;
+}
+
+.manalist {
+  display: flex;
+  gap: 0.5rem;
+
+  .manalist-text {
+    min-width: 80px;
+  }
+  input {
+    max-width: 50px;
+  }
 }

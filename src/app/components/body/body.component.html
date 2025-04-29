@@ -19,17 +19,21 @@
 <!--            <mat-option [value]="'Type'">Type</mat-option>-->
 <!--          </mat-select>-->
 <!--        </mat-form-field>-->
-        <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="dataArr"></app-autocomplete-search>
+        <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="filteredDataArr"></app-autocomplete-search>
 <!--        <button mat-button (click)="openAdvancedSearch($event)">Advanced Search-->
 <!--          <mat-icon *ngIf="!advancedSearchOpen" fontIcon="arrow_drop_down" aria-hidden="false" aria-label="arrow drop down icon" iconPositionEnd></mat-icon>-->
 <!--          <mat-icon *ngIf="advancedSearchOpen" fontIcon="arrow_drop_up" aria-hidden="false" aria-label="arrow drop up icon" iconPositionEnd></mat-icon>-->
 <!--        </button>-->
       </div>
+    </div>
+    <div class="advanced-filter">
       <div class="slide-toggles">
-<!--        <p><mat-slide-toggle (change)="changeSearchSelection($event)">Name</mat-slide-toggle></p>-->
-<!--        <p><mat-slide-toggle>Type</mat-slide-toggle></p>-->
-<!--        <p><mat-slide-toggle>Effect</mat-slide-toggle></p>-->
         <p *ngFor="let slideToggle of slideToggles"><mat-slide-toggle [(ngModel)]="slideToggle.checked" (change)="updateSearchSelection($event)">{{ slideToggle.name }}</mat-slide-toggle></p>
+      </div>
+      <div class="advanced-search">
+        <app-advanced-search-dropdown [dropdownType]="'Color'"></app-advanced-search-dropdown>
+        <app-advanced-search-dropdown [dropdownType]="'Color Identity'"></app-advanced-search-dropdown>
+        <app-advanced-search-dropdown [dropdownType]="'Mana'"></app-advanced-search-dropdown>
       </div>
     </div>
     <ng-container *ngIf="advancedSearchOpen">

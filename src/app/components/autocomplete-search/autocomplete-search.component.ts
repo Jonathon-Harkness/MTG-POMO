@@ -53,16 +53,6 @@ export class AutocompleteSearchComponent implements OnInit {
 
     this.myControl.valueChanges.subscribe(value => {
       const name = typeof value === 'string' ? value : value?.name;
-      // if (this.autocompleteService.currentValue === 'Name') {
-      //   const filteredResult = name ? this._filterName(name as string) : this.cardOptions().slice();
-      //   this.dataService.updateData(filteredResult);
-      // } else if (this.autocompleteService.currentValue === 'Effect') {
-      //   const filteredResult = name ? this._filterEffect(name as string) : this.cardOptions().slice();
-      //   this.dataService.updateData(filteredResult);
-      // } else if (this.autocompleteService.currentValue === 'Type') {
-      //   const filteredResult = name ? this._filterType(name as string) : this.cardOptions().slice();
-      //   this.dataService.updateData(filteredResult);
-      // }
       const filteredResult = name ? this._filter(name as string) : this.cardOptions().slice();
       this.dataService.updateData(filteredResult);
     });
@@ -125,7 +115,6 @@ export class AutocompleteSearchComponent implements OnInit {
         }
       }
     }
-    console.log(slideToggles);
     console.log(netFilter);
     if (noneChecked) {
       netFilter = this.cardOptions();

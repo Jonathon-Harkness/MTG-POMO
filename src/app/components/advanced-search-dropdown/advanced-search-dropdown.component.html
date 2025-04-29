@@ -1,11 +1,25 @@
 <div class="expansion-panel">
   <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
     <mat-expansion-panel-header>
-      <mat-panel-title>sadf</mat-panel-title>
-      <mat-panel-description>
-        Currently I am {{panelOpenState() ? 'open' : 'closed'}}
-      </mat-panel-description>
+      <mat-panel-title>{{ dropdownType() }}</mat-panel-title>
     </mat-expansion-panel-header>
-    <p>I'm visible because I am open</p>
+    <ng-container *ngIf="dropdownType() === 'Color'">
+      <ul>
+        <li *ngFor="let color of colorList"><mat-checkbox class="example-margin" (change)="updateList(color, $event)">{{ color }}</mat-checkbox></li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="dropdownType() === 'Color Identity'">
+      <ul>
+        <li *ngFor="let color of colorList"><mat-checkbox class="example-margin">{{ color }}</mat-checkbox></li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="dropdownType() === 'Mana'">
+      <ul>
+        <li class="manalist" *ngFor="let color of colorList">
+          <span class="manalist-text">{{ color }}</span>
+          <input type="number" step="1" value="0" matInput>
+        </li>
+      </ul>
+    </ng-container>
   </mat-expansion-panel>
 </div>

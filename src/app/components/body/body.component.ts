@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {delay, Observable, take} from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
-import {Data, SlideToggle} from '../../interfaces/pomo.interface';
+import {colorSearchFilter, Data, SearchFilter, SlideToggle} from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
@@ -22,6 +22,7 @@ import {MatSlideToggleChange, MatSlideToggleModule} from '@angular/material/slid
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {AdvancedSearchComponent} from '../advanced-search/advanced-search.component';
+import {AdvancedSearchService} from '../../services/advanced-search.service';
 
 
 @Component({
@@ -59,12 +60,17 @@ export class BodyComponent implements OnInit, OnDestroy {
   dataArr: any[] = [];
   selectedSearchOption: string = 'Name';
   advancedSearchOpen = false;
+  numbers: number[] = [1, 2, 3, 4, 5];
+  selectedNumber: number = 1;
+  searchFilters: SearchFilter;
+  filteredDataArr: any[];
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private scryfallService: ScryfallService,
     private dataService: DataService,
     private autocompleteService: AutocompleteService,
+    private advancedSearchService: AdvancedSearchService
   )
   { }
 
@@ -90,6 +96,7 @@ export class BodyComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
     this.getCardDataSearch();
     this.autocompleteService.updateData(this.slideToggles);
+    this.getFilters();
   }
 
   ngOnDestroy() {
@@ -132,9 +139,43 @@ export class BodyComponent implements OnInit, OnDestroy {
     this.dataSource = new MatTableDataSource<Data>(this.dataArr);
     this.dataSource.paginator = this.paginator;
     this.obs = this.dataSource.connect();
-    this.dataService.updateData(this.dataArr);
+    this.filteredDataArr = this.dataArr;
+    this.dataService.updateData(this.filteredDataArr);
     this.isLoading = false;
     this.getCardData();
+  }
+
+  getFilters() {
+    this.advancedSearchService.currentSearchFilters.subscribe(filter => {
+      this.searchFilters = filter;
+      this.filterData();
+    })
+  }
+
+  private filterData() {
+    this.filteredDataArr = [];
+    const idSet = new Set<string>();
+    for(const card of this.dataArr) {
+      this.searchFilters.colorSearchFilter.forEach((value: colorSearchFilter, key: string) => {
+        // colorless exception
+        if (value.colorCode === 'C') {
+          if (!idSet.has(card.id) && value.enabled && (card.colors ?? card.card_faces[0].colors).length === 0) {
+            this.filteredDataArr.push(card);
+            idSet.add(card.id);
+          }
+        }
+        else {
+          if (!idSet.has(card.id) && value.enabled && (card.colors ?? card.card_faces[0].colors).includes(value.colorCode)) {
+            this.filteredDataArr.push(card);
+            idSet.add(card.id);
+          }
+        }
+      });
+    }
+    if (!this.searchFilters.colorEnabled) {
+      this.filteredDataArr = this.dataArr;
+    }
+    this.dataSource.data = this.filteredDataArr;
   }
 
   getCardData() {

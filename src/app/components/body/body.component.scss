@@ -81,7 +81,7 @@ img {
 .filter {
   margin-top: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   flex-flow: row wrap;
 
   .search {
@@ -113,11 +113,18 @@ img {
   }
 }
 
-.advanced-search {
-  justify-self: flex-end;
-  //margin-right: 3rem;
-}
-
 .slide-toggles {
   gap: 0.5rem;
+}
+
+.advanced-search {
+  gap: 0.5rem;
+  display: flex;
+  margin-left: 1rem;
+  width: 100%;
+}
+
+.advanced-filter {
+  display: flex;
+  justify-content: left;
 }
