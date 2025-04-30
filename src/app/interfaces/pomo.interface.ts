@@ -1,3 +1,5 @@
+import {FormControl} from '@angular/forms';
+
 export interface Data {
   identifiers: Name[];
 }
@@ -25,4 +27,14 @@ export interface colorSearchFilter {
 }
 
 export interface manaSearchFilter {
+}
+
+export interface SearchFilters {
+  colors: FormControl<Map<string, boolean>>
+  manaSearchType: FormControl<string>,
+  name: FormControl<string>,
+  oracle_text: FormControl<string>,
+  totalMana: FormControl<number>,
+  type: FormControl<string>,
+  colorSearchMode: FormControl<string>
 }

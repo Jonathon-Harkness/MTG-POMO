@@ -118,10 +118,51 @@ img {
 }
 
 .advanced-search {
-  gap: 0.5rem;
-  display: flex;
-  margin-left: 1rem;
   width: 100%;
+
+  .oracle-text {
+    width: 100%;
+  }
+
+  .type {
+    width: 100%;
+  }
+
+  .mana {
+    display: flex;
+    gap: 0.25rem;
+
+    @media (max-width: 768px) {
+      display: inline-grid;
+      width: 100%;
+    }
+
+    .input-box {
+      max-width: 80px;
+    }
+
+    .mana-icons {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 1rem;
+      width: 100%;
+      max-width: 400px;
+      align-items: start;
+
+      @media (max-width: 768px) {
+        padding-right: 1.5rem;
+        padding-left: 1.15rem;
+        max-width: none;
+      }
+
+      .item {
+        max-width: 30px;
+        i {
+          padding-left: 0.75em;
+        }
+      }
+    }
+  }
 }
 
 .advanced-filter {

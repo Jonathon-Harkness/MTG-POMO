@@ -1,11 +1,11 @@
-import {Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy, OnChanges} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy, OnChanges, model} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginator } from '@angular/material/paginator';
 import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {delay, Observable, take} from 'rxjs';
 import {ScryfallService} from '../../services/scryfall.service';
-import {colorSearchFilter, Data, SearchFilter, SlideToggle} from '../../interfaces/pomo.interface';
+import {colorSearchFilter, Data, SearchFilter, SearchFilters, SlideToggle} from '../../interfaces/pomo.interface';
 import {RouterLink} from '@angular/router';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatAutocomplete, MatOption} from '@angular/material/autocomplete';
@@ -15,7 +15,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {AdvancedSearchDropdownComponent} from '../advanced-search-dropdown/advanced-search-dropdown.component';
 import {MatFormField} from '@angular/material/form-field';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
-import {FormsModule} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AutocompleteService} from '../../services/autocomplete.service';
 import {MatInput} from '@angular/material/input';
 import {MatSlideToggleChange, MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -23,6 +23,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {AdvancedSearchComponent} from '../advanced-search/advanced-search.component';
 import {AdvancedSearchService} from '../../services/advanced-search.service';
+import {MatCheckbox, MatCheckboxChange} from '@angular/material/checkbox';
 
 
 @Component({
@@ -46,7 +47,9 @@ import {AdvancedSearchService} from '../../services/advanced-search.service';
     MatIconButton,
     MatButton,
     MatIconModule,
-    AdvancedSearchComponent
+    AdvancedSearchComponent,
+    ReactiveFormsModule,
+    MatCheckbox
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
@@ -54,8 +57,9 @@ import {AdvancedSearchService} from '../../services/advanced-search.service';
 })
 export class BodyComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(AutocompleteSearchComponent) autoCompleteSearchComponent: AutocompleteSearchComponent;
   obs: Observable<any>;
-  dataSource: MatTableDataSource<Data>;
+  dataSource: MatTableDataSource<any>;
   isLoading: boolean = true;
   dataArr: any[] = [];
   selectedSearchOption: string = 'Name';
@@ -64,6 +68,27 @@ export class BodyComponent implements OnInit, OnDestroy {
   selectedNumber: number = 1;
   searchFilters: SearchFilter;
   filteredDataArr: any[];
+  filteredDataAutocompleteSearch: any[];
+
+  colors = new Map<string, boolean>([
+    ['W', false], // White
+    ['U', false], // Blue
+    ['B', false], // Black
+    ['R', false], // Red
+    ['G', false], // Green
+    ['C', false]  // Colorless
+  ]);
+
+  // Form Group And its Form Controls
+  inputForm = new FormGroup<SearchFilters>({
+    name: new FormControl('', {nonNullable: true}),
+    oracle_text: new FormControl('', {nonNullable: true}),
+    type: new FormControl('',{nonNullable: true}),
+    manaSearchType: new FormControl('', {nonNullable: true}),
+    totalMana: new FormControl(0, {nonNullable: true}),
+    colors: new FormControl(this.colors, {nonNullable: true}),
+    colorSearchMode: new FormControl('exact', {nonNullable: true})
+  });
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -97,6 +122,12 @@ export class BodyComponent implements OnInit, OnDestroy {
     this.getCardDataSearch();
     this.autocompleteService.updateData(this.slideToggles);
     this.getFilters();
+
+    this.inputForm.valueChanges
+      .subscribe(obj => {
+        console.log(obj)
+        this.dataService.filterData(obj, this.dataArr);
+      });
   }
 
   ngOnDestroy() {
@@ -136,11 +167,10 @@ export class BodyComponent implements OnInit, OnDestroy {
       return 0;
     });
     console.log(this.dataArr);
-    this.dataSource = new MatTableDataSource<Data>(this.dataArr);
+    this.dataSource = new MatTableDataSource<any>(this.dataArr);
     this.dataSource.paginator = this.paginator;
     this.obs = this.dataSource.connect();
-    this.filteredDataArr = this.dataArr;
-    this.dataService.updateData(this.filteredDataArr);
+    this.dataService.updateData(this.dataArr);
     this.isLoading = false;
     this.getCardData();
   }
@@ -176,11 +206,13 @@ export class BodyComponent implements OnInit, OnDestroy {
       this.filteredDataArr = this.dataArr;
     }
     this.dataSource.data = this.filteredDataArr;
+    this.dataService.updateData(this.filteredDataArr);
+    console.log(this.dataSource.data);
   }
 
   getCardData() {
     this.dataService.currentData.subscribe(data => {
-      this.dataSource.data = data
+      this.dataSource.data = data;
     })
   }
 
@@ -188,17 +220,25 @@ export class BodyComponent implements OnInit, OnDestroy {
     return card.image_uris ? card.image_uris.normal : card.card_faces[0]?.image_uris?.normal;
   }
 
-  updateSearchType(event: MatSelectChange) {
-    this.autocompleteService.updateData(event.value);
-  }
-
-  openAdvancedSearch(event: MouseEvent) {
-    this.advancedSearchOpen = !this.advancedSearchOpen;
+  setFilteredCardOptions(event: any) {
+    this.filteredDataAutocompleteSearch = event;
+    console.log(this.filteredDataAutocompleteSearch);
   }
 
   updateSearchSelection(event: MatSlideToggleChange) {
     console.log(event);
     this.autocompleteService.updateData(this.slideToggles);
+  }
+
+  openAdvancedSearch(event: Event) {
+    this.advancedSearchOpen = !this.advancedSearchOpen;
+  }
+
+  updateSelectedColors(colorCode: string, event: MatCheckboxChange) {
+    const colorObj = this.inputForm.getRawValue().colors;
+    const colorMap = colorObj?.get(colorCode);
+    colorObj?.set(colorCode, !colorMap);
+    this.inputForm.patchValue({colors: colorObj});
   }
 
 }

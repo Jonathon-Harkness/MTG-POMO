@@ -9,36 +9,112 @@
 </ng-container>
 <ng-container *ngIf="!isLoading">
   <div class="container">
-    <div class="filter">
-      <div class="search">
-<!--        <mat-form-field class="search-type">-->
-<!--          <mat-label>Search Type</mat-label>-->
-<!--          <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">-->
-<!--            <mat-option [value]="'Name'">Name</mat-option>-->
-<!--            <mat-option [value]="'Effect'">Effect</mat-option>-->
-<!--            <mat-option [value]="'Type'">Type</mat-option>-->
-<!--          </mat-select>-->
-<!--        </mat-form-field>-->
-        <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="filteredDataArr"></app-autocomplete-search>
-<!--        <button mat-button (click)="openAdvancedSearch($event)">Advanced Search-->
-<!--          <mat-icon *ngIf="!advancedSearchOpen" fontIcon="arrow_drop_down" aria-hidden="false" aria-label="arrow drop down icon" iconPositionEnd></mat-icon>-->
-<!--          <mat-icon *ngIf="advancedSearchOpen" fontIcon="arrow_drop_up" aria-hidden="false" aria-label="arrow drop up icon" iconPositionEnd></mat-icon>-->
-<!--        </button>-->
+    <form [formGroup]="inputForm">
+      <div class="filter">
+        <div class="search">
+  <!--        <mat-form-field class="search-type">-->
+  <!--          <mat-label>Search Type</mat-label>-->
+  <!--          <mat-select [(value)]="selectedSearchOption" (selectionChange)="updateSearchType($event)">-->
+  <!--            <mat-option [value]="'Name'">Name</mat-option>-->
+  <!--            <mat-option [value]="'Effect'">Effect</mat-option>-->
+  <!--            <mat-option [value]="'Type'">Type</mat-option>-->
+  <!--          </mat-select>-->
+  <!--        </mat-form-field>-->
+          <mat-form-field class="app-autocomplete-search">
+            <mat-label>Search Name</mat-label>
+            <input matInput type="text" formControlName="name">
+            @if (inputForm.getRawValue().name) {
+              <button matSuffix mat-icon-button aria-label="Clear" (click)="inputForm.patchValue({ name: '' })">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+<!--          <app-autocomplete-search class="app-autocomplete-search" [cardOptions]="dataArr" (searchOptions)="setFilteredCardOptions($event)"></app-autocomplete-search>-->
+          <button mat-button (click)="openAdvancedSearch($event)">Advanced Search
+            <mat-icon *ngIf="!advancedSearchOpen" fontIcon="arrow_drop_down" aria-hidden="false" aria-label="arrow drop down icon" iconPositionEnd></mat-icon>
+            <mat-icon *ngIf="advancedSearchOpen" fontIcon="arrow_drop_up" aria-hidden="false" aria-label="arrow drop up icon" iconPositionEnd></mat-icon>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="advanced-filter">
-      <div class="slide-toggles">
-        <p *ngFor="let slideToggle of slideToggles"><mat-slide-toggle [(ngModel)]="slideToggle.checked" (change)="updateSearchSelection($event)">{{ slideToggle.name }}</mat-slide-toggle></p>
-      </div>
-      <div class="advanced-search">
-        <app-advanced-search-dropdown [dropdownType]="'Color'"></app-advanced-search-dropdown>
-        <app-advanced-search-dropdown [dropdownType]="'Color Identity'"></app-advanced-search-dropdown>
-        <app-advanced-search-dropdown [dropdownType]="'Mana'"></app-advanced-search-dropdown>
-      </div>
-    </div>
-    <ng-container *ngIf="advancedSearchOpen">
-      <app-advanced-search></app-advanced-search>
-    </ng-container>
+      <ng-container *ngIf="advancedSearchOpen">
+  <!--      <app-advanced-search></app-advanced-search>-->
+        <div class="advanced-search">
+  <!--        <div class="slide-toggles">-->
+  <!--          <p *ngFor="let slideToggle of slideToggles"><mat-slide-toggle [(ngModel)]="slideToggle.checked" (change)="updateSearchSelection($event)">{{ slideToggle.name }}</mat-slide-toggle></p>-->
+  <!--        </div>-->
+          <mat-form-field class="oracle-text">
+            <mat-label>Search Oracle Text</mat-label>
+            <input matInput type="text" formControlName="oracle_text">
+            @if (inputForm.getRawValue().oracle_text) {
+              <button matSuffix mat-icon-button aria-label="Clear" (click)="inputForm.patchValue({ oracle_text: '' })">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+          <mat-form-field class="type">
+            <mat-label>Search Type</mat-label>
+            <input matInput type="text" formControlName="type">
+            @if (inputForm.getRawValue().type) {
+              <button matSuffix mat-icon-button aria-label="Clear" (click)="inputForm.patchValue({ type: '' })">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+          <div class="mana">
+            <mat-form-field>
+              <mat-label>Mana Value</mat-label>
+              <mat-select>
+                <mat-option value="option1">Greater Than</mat-option>
+                <mat-option value="option2">Less Than</mat-option>
+                <mat-option value="option3">Equal To</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="input-box">
+              <input type="number" step="1" value="0" matInput>
+            </mat-form-field>
+            <div class="mana-icons">
+              <div class="item">
+                <i class="ms ms-w"></i>
+                <mat-checkbox (change)="updateSelectedColors('W', $event)"></mat-checkbox>
+              </div>
+              <div class="item">
+                <i class="ms ms-u"></i>
+                <mat-checkbox (change)="updateSelectedColors('U', $event)"></mat-checkbox>
+              </div>
+              <div class="item">
+                <i class="ms ms-b"></i>
+                <mat-checkbox (change)="updateSelectedColors('B', $event)"></mat-checkbox>
+              </div>
+              <div class="item">
+                <i class="ms ms-r"></i>
+                <mat-checkbox (change)="updateSelectedColors('R', $event)"></mat-checkbox>
+              </div>
+              <div class="item">
+                <i class="ms ms-g"></i>
+                <mat-checkbox (change)="updateSelectedColors('G', $event)"></mat-checkbox>
+              </div>
+              <div class="item">
+                <i class="ms ms-c"></i>
+                <mat-checkbox (change)="updateSelectedColors('C', $event)"></mat-checkbox>
+              </div>
+            </div>
+            <mat-form-field style="margin-left: 1rem;">
+              <mat-label>Color Search Mode</mat-label>
+              <mat-select formControlName="colorSearchMode">
+                <mat-option value="exact">Exactly These Colors</mat-option>
+                <mat-option value="including">Including These Colors</mat-option>
+                <mat-option value="atMost">At Most These Colors</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+  <!--        <div class="advanced-search">-->
+  <!--          <app-advanced-search-dropdown [dropdownType]="'Color'"></app-advanced-search-dropdown>-->
+  <!--          <app-advanced-search-dropdown [dropdownType]="'Color Identity'"></app-advanced-search-dropdown>-->
+  <!--          <app-advanced-search-dropdown [dropdownType]="'Mana'"></app-advanced-search-dropdown>-->
+  <!--        </div>-->
+        </div>
+      </ng-container>
+    </form>
     <div class="card-container">
       <mat-card class="card" *ngFor="let card of obs | async">
         <a target="_blank" [href]="card.scryfall_uri"><img mat-card-image [src]="getCardImage(card)" [alt]="card.name"></a>

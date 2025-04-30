@@ -39,10 +39,15 @@ export interface User {
 })
 export class AutocompleteSearchComponent implements OnInit {
   cardOptions = input<any>();
-  filteredCardOptions = output<any>();
+  searchOptions = output<any>();
   myControl = new FormControl<string | any>('');
   filteredOptions: Observable<Name[]>;
   value = '';
+  searchOptionValues = {
+    name: '',
+    oracle_text: '',
+    type: ''
+  }
 
   constructor(
     private dataService: DataService,
@@ -54,28 +59,16 @@ export class AutocompleteSearchComponent implements OnInit {
     this.myControl.valueChanges.subscribe(value => {
       const name = typeof value === 'string' ? value : value?.name;
       const filteredResult = name ? this._filter(name as string) : this.cardOptions().slice();
+      this.searchOptions.emit(filteredResult);
       this.dataService.updateData(filteredResult);
     });
 
     this.autocompleteService.currentSearchType.subscribe(searchType => {
       const filteredResult = this.myControl.value ? this._filter(this.myControl.value as string) : this.cardOptions().slice();
+      this.searchOptions.emit(filteredResult);
       this.dataService.updateData(filteredResult);
-    })
-  }
+    });
 
-  private _filterName(name: string): any {
-    const filterValue = name.toLowerCase();
-    return this.cardOptions().filter((option: any) => option.name.toLowerCase().includes(filterValue));
-  }
-
-  private _filterEffect(effect: string): any {
-    const filterValue = effect.toLowerCase();
-    return this.cardOptions().filter((option: any) => (option.oracle_text ?? option.card_faces[0].oracle_text).toLowerCase().includes(filterValue));
-  }
-
-  private _filterType(type: string): any {
-    const filterType = type.toLowerCase();
-    return this.cardOptions().filter((option: any) => (option.type_line ?? option.card_faces[0].type_line).toLowerCase().includes(filterType));
   }
 
   private newFilterValue(netFilter: any[], filterType: any[]) {
@@ -124,9 +117,5 @@ export class AutocompleteSearchComponent implements OnInit {
 
   clearResults() {
     this.value = '';
-  }
-
-  get searchTypeLabel() {
-    return this.autocompleteService.currentValue;
   }
 }
