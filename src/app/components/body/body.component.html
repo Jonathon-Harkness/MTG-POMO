@@ -63,14 +63,14 @@
           <div class="mana">
             <mat-form-field>
               <mat-label>Mana Value</mat-label>
-              <mat-select>
-                <mat-option value="option1">Greater Than</mat-option>
-                <mat-option value="option2">Less Than</mat-option>
-                <mat-option value="option3">Equal To</mat-option>
+              <mat-select formControlName="manaSearchType">
+                <mat-option value="greater">Greater Than</mat-option>
+                <mat-option value="less">Less Than</mat-option>
+                <mat-option value="equal">Equal To</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field class="input-box">
-              <input type="number" step="1" value="0" matInput>
+              <input type="number" step="1" value="0" matInput formControlName="totalMana">
             </mat-form-field>
             <div class="mana-icons">
               <div class="item">

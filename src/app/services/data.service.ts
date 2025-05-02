@@ -78,6 +78,17 @@ export class DataService {
         }
       }
     }
+
+    // mana value
+    if (obj.manaSearchType) {
+      if (obj.manaSearchType === 'greater') {
+        newData = newData.filter((option: any) => (option.cmc ?? option.card_faces[0].cmc) > obj.totalMana);
+      } else if (obj.manaSearchType === 'less') {
+        newData = newData.filter((option: any) => (option.cmc ?? option.card_faces[0].cmc) < obj.totalMana);
+      } else if (obj.manaSearchType === 'equal') {
+        newData = newData.filter((option: any) => (option.cmc ?? option.card_faces[0].cmc) === obj.totalMana);
+      }
+    }
     console.log(newData);
     this.updateData(newData);
   }
