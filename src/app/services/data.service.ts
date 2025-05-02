@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {colorSearchFilter, SearchFilters} from '../interfaces/pomo.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -40,28 +39,41 @@ export class DataService {
 
     // color filters, get all true keys
     if (obj.colors) {
+      let allFalse = true;
+      let trueColors: string[] = [];
 
-      if (obj.colorSearchMode && obj.colorSearchMode === 'exact') {
-        let trueColors: string[] = [];
-        let allFalse = true;
+      if (obj.colorSearchMode) {
         obj.colors.forEach((value: boolean, key: string) => {
           if (value) {
             allFalse = false;
-            if (key != 'C') {
-              trueColors.push(key);
-            }
+            trueColors.push(key);
           }
         });
+      }
+      console.log(trueColors);
+
+      if (obj.colorSearchMode && obj.colorSearchMode === 'exact') {
+        trueColors = trueColors.filter(color => color != 'C');
         if (!allFalse) {
-          console.log(trueColors);
-          console.log(newData);
+          trueColors.sort();
           newData = newData.filter((option: any) => {
-            trueColors.sort();
             const op = (option.colors ?? option.card_faces[0].colors).sort();
-            // console.log('card sorted: ' + op)
-            // console.log(trueColors);
-            // console.log(this.arrayEquals(op, trueColors));
             return this.arrayEquals(op, trueColors);
+          });
+        }
+      } else if (obj.colorSearchMode && obj.colorSearchMode === 'including') {
+        if (!allFalse) {
+          newData = newData.filter((option: any) => {
+            if (trueColors.includes('C') && trueColors.length === 1 && (option.colors ?? option.card_faces[0].colors).length === 0) {
+              return true;
+            }
+            return trueColors.filter((color: string) => !(option.colors ?? option.card_faces[0].colors).includes(color)).length === 0;
+          });
+        }
+      } else if (obj.colorSearchMode && obj.colorSearchMode === 'atMost') {
+        if (!allFalse) {
+          newData = newData.filter((option: any) => {
+            return (option.colors ?? option.card_faces[0].colors).filter((color: string) => !trueColors.includes(color)).length === 0;
           });
         }
       }
