@@ -106,6 +106,19 @@
                 <mat-option value="atMost">At Most These Colors</mat-option>
               </mat-select>
             </mat-form-field>
+            <mat-form-field style="margin-left: 1rem;">
+              <mat-label>Sort By</mat-label>
+              <mat-select formControlName="sort">
+                <mat-optgroup label="Alphabetically">
+                  <mat-option value="A-Z">A-Z</mat-option>
+                  <mat-option value="Z-A">Z-A</mat-option>
+                </mat-optgroup>
+                <mat-optgroup label="Mana Value">
+                  <mat-option value="lowMana">Low - High</mat-option>
+                  <mat-option value="highMana">High - Low</mat-option>
+                </mat-optgroup>
+              </mat-select>
+            </mat-form-field>
           </div>
   <!--        <div class="advanced-search">-->
   <!--          <app-advanced-search-dropdown [dropdownType]="'Color'"></app-advanced-search-dropdown>-->

@@ -36,5 +36,6 @@ export interface SearchFilters {
   oracle_text: FormControl<string>,
   totalMana: FormControl<number>,
   type: FormControl<string>,
-  colorSearchMode: FormControl<string>
+  colorSearchMode: FormControl<string>,
+  sort: FormControl<string>,
 }

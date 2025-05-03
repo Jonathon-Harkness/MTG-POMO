@@ -87,7 +87,8 @@ export class BodyComponent implements OnInit, OnDestroy {
     manaSearchType: new FormControl('', {nonNullable: true}),
     totalMana: new FormControl(0, {nonNullable: true}),
     colors: new FormControl(this.colors, {nonNullable: true}),
-    colorSearchMode: new FormControl('exact', {nonNullable: true})
+    colorSearchMode: new FormControl('exact', {nonNullable: true}),
+    sort: new FormControl('', {nonNullable: true})
   });
 
   constructor(

@@ -89,6 +89,40 @@ export class DataService {
         newData = newData.filter((option: any) => (option.cmc ?? option.card_faces[0].cmc) === obj.totalMana);
       }
     }
+
+    // sort by
+    if (obj.sort) {
+      switch (obj.sort) {
+        case 'A-Z':
+          newData.sort((a: any, b: any) => {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+          });
+          break;
+        case 'Z-A':
+          newData.sort((a: any, b: any) => {
+            if (a.name < b.name) return 1;
+            if (a.name > b.name) return -1;
+            return 0;
+          });
+          break;
+        case 'lowMana':
+          newData.sort((a: any, b: any) => {
+            if ((a.cmc ?? a.card_faces[0].cmc) < (b.cmc ?? b.card_faces[0].cmc)) return -1;
+            if ((a.cmc ?? a.card_faces[0].cmc) > (b.cmc ?? b.card_faces[0].cmc)) return 1;
+            return 0;
+          });
+          break;
+        case 'highMana':
+          newData.sort((a: any, b: any) => {
+            if ((a.cmc ?? a.card_faces[0].cmc) < (b.cmc ?? b.card_faces[0].cmc)) return 1;
+            if ((a.cmc ?? a.card_faces[0].cmc) > (b.cmc ?? b.card_faces[0].cmc)) return -1;
+            return 0;
+          });
+          break;
+      }
+    }
     console.log(newData);
     this.updateData(newData);
   }
