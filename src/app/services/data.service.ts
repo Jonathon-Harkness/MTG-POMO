@@ -34,7 +34,37 @@ export class DataService {
       newData = newData.filter((option: any) => (option.oracle_text ?? option.card_faces[0].oracle_text).toLowerCase().includes(obj.oracle_text.toLowerCase()));
     }
     if (obj.type) {
-      newData = newData.filter((option: any) => (option.type_line ?? option.card_faces[0].type_line).toLowerCase().includes(obj.type.toLowerCase()));
+      if (obj.type[0] === '=') {
+        newData = newData.filter((option: any) => {
+          const splitAnd = obj.type.substring(1).split('|');
+          const typeStr = (option.type_line ?? option.card_faces[0].type_line).toLowerCase();
+          let notInString = false;
+          //console.log('in')
+          for (const searchValue of splitAnd) {
+            if (!(searchValue.startsWith('"') && searchValue.endsWith('"'))) {
+              //console.log('break');
+              break;
+            }
+            console.log(searchValue);
+            console.log(typeStr);
+            if (searchValue[1] === '!') {
+              const searchVal = searchValue.substring(2, searchValue.length - 2);
+              if (!typeStr.includes(searchVal.toLowerCase())) {
+                notInString = true;
+              }
+            }
+            else {
+              const searchVal = searchValue.substring(1, searchValue.length - 2);
+              if (typeStr.includes(searchVal.toLowerCase())) {
+                notInString = true;
+              }
+            }
+          }
+          return notInString;
+        })
+      } else {
+        newData = newData.filter((option: any) => (option.type_line ?? option.card_faces[0].type_line).toLowerCase().includes(obj.type.toLowerCase()));
+      }
     }
 
     // color filters, get all true keys
